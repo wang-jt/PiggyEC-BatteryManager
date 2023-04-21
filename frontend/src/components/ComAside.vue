@@ -10,7 +10,7 @@
     style="height: 100%; border: none"
     :collapse="$store.state.isCollapse"
   >
-    <h3>{{ $store.state.isCollapse ? "管理" : "牛人后台管理系统" }}</h3>
+    <h3>{{ $store.state.isCollapse ? "管理模式" : "共享电柜管理系统" }}</h3>
     <el-menu-item
       @click="clickMenu(item)"
       v-for="(item, index) in menu"
@@ -31,18 +31,33 @@ export default {
       menu: [
         {
           icon: "el-icon-menu",
-          title: "首页",
+          title: "主页",
           path: "/home",
         },
         {
+          icon: "el-icon-menu",
+          title: "信息总览",
+          path: "/overview",
+        },
+        {
           icon: "el-icon-document",
-          title: "用户",
+          title: "可用电瓶查询",
+          path: "/available",
+        },
+        {
+          icon: "el-icon-setting",
+          title: "归还点位查询",
+          path: "/return",
+        },
+        {
+          icon: "el-icon-setting",
+          title: "我的信息",
           path: "/user",
         },
         {
           icon: "el-icon-setting",
-          title: "其他",
-          path: "/other",
+          title: "工单状态",
+          path: "/order",
         }
       ],
     };

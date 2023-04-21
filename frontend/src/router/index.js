@@ -31,7 +31,18 @@ const routes = [{
         path: '/other',
         name: 'other',
         component: () => import('../views/OtherView.vue')
+      },
+      {
+        path: '/return',
+        name: 'return',
+        component: () => import('../views/ReturnView.vue')
+      },
+      {
+        path: '/available',
+        name: 'available',
+        component: () => import('../views/ReturnView.vue')
       }
+      
     ]
   }
 ]
