@@ -181,7 +181,7 @@ export default {
     // 绘制图表
     line.setOption({
       title: {
-        text: "卡拉云新用户激活数据",
+        text: "共享电柜使用人次表",
         // subtext: 'Demo 虚构数据',
         x: "center",
       },
