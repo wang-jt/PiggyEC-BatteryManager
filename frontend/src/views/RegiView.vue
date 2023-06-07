@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form class="login-form">
-      <h1 class="title">用户登录</h1>
+      <h1 class="title">用户注册</h1>
       <el-form-item prop="username">
         <i class="iconfont icon-yonghu"></i>
         <el-input type="text" v-model="user.username" />
@@ -14,11 +14,10 @@
           :class="look ? 'iconfont icon-yanjing-bi' : 'iconfont icon-yanjing'"
         ></i>
       </el-form-item>
-      <el-button type="primary" @click="regi">注册</el-button>
+      <el-button type="primary" @click="login">注册</el-button>
       <br />
       <h4> </h4>
-      <el-button type="primary" @click="login">登录</el-button>
-      
+      <el-button type="primary" @click="backlogin">返回登录</el-button>
     </el-form>
   </div>
 </template>
@@ -31,37 +30,34 @@ export default {
       // showLoading:false,
       look: true,
       user: {
-        username: "admin",
+        username: "user1",
         password: "123",
       },
     };
   },
   methods: {
     loading() {
-      this.$root.$guser = this.user.username;
       const loading = this.$loading({
         lock: true,
-        text: "正在登录请稍等...",
+        text: "正在注册请稍等...",
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)",
       });
       setTimeout(() => {
         loading.close();
-        this.$router.push("/home");
+        this.$router.push("/login");
       }, 500);
-    },
-    regi(){
-      this.$router.push("/register");
     },
     login() {
       this.showLoading = true;
-      var res = reqAPI('GET',`/login,${this.user.username},${this.user.password}`, null);
-      if(res.can == true){
+      var res = reqAPI('POST',`/register,${this.user.username},${this.user.password}`, null);
+      if(res.can == true)
         this.loading();
-        this.$root.$guserid = res.id;
-      }
       else
-        alert("用户名或密码错误");
+        alert("用户名已存在");
+    },
+    backlogin(){
+      this.$router.push("/login");
     },
     isLook() {
       this.look = !this.look;

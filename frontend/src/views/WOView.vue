@@ -17,14 +17,14 @@
         :addEdit="addEdit"
       ></com-table>
       <!--  -->
-      <el-input v-model="search" align="right" placeholder="输入车辆型号进行搜索" />
+      <el-input v-model="search" align="right" placeholder="输入标题或内容进行搜索" />
     </div>
     <el-table
       class="table"
       :data="
         tableData.filter(
           (data) =>
-            !search || data.type.includes(search)
+            !search || data.title.toLowerCase().includes(search.toLowerCase())
         )
       "
       style="width: 100%"
@@ -38,9 +38,6 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
           <el-button
             size="mini"
             type="danger"
@@ -55,7 +52,7 @@
 </template>
 
 <script>
-import ComTable from "@/components/ComTableECycle.vue";
+import ComTable from "@/components/ComTableWO.vue";
 import ComPagination from "@/components/ComPagination.vue";
 import { reqAPI } from "@/request";
 export default {
@@ -69,18 +66,16 @@ export default {
       addEdit: true,
       dialogForm: false,
       label: {
-        id: "车辆ID",
-        type: "车辆型号",
-        parameter: "电瓶参数",
-        ownerId: "车主ID",
-        ownerName:"车主姓名",
-        isUsing: "电池装配情况",
-        BatteryId: "使用电池ID"
+        id: "工单编号",
+        title: "工单标题",
+        content: "工单内容",
+        ownerId: "工单发起者ID",
+        ownerName: "工单发起者名",
       },
       form: {
         id: "",
-        type: "",
-        parameter: "",
+        title: "",
+        content: "",
         ownerId: "",
       },
       tableData: [
@@ -90,13 +85,13 @@ export default {
     };
   },
   created() {
-    this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+    this.tableData = reqAPI('GET',`/workorder/getallworkorder/${this.$root.$guser}`, null).tableData;
     console.log(this.tableData);
   },
 
   methods: {
     clearForm() {
-      this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      this.tableData = reqAPI('GET',`/workorder/getallworkorder/${this.$root.$guser}`, null).tableData;
       setTimeout(() => {
         this.form = {
         id: "",
@@ -109,13 +104,8 @@ export default {
     },
     saveForm(bool, form, isAdd) {
       this.dialogForm = bool;
-      if (isAdd == false) {
-        console.log('editcycle', form);
-        reqAPI('POST',`/editECycle/${form.id}`, form);
-      } else{
-        console.log('addecycle', form);
-        reqAPI('POST',`/addECycle`, form);
-      }
+      console.log('addecycle', form);
+      reqAPI('POST',`/workorder/addworkorder`, form);
       this.clearForm();
     },
     handleClose(bool) {
@@ -129,8 +119,8 @@ export default {
     },
     handleDelete(index, row) {
       console.log('handledelete', row.id);
-      reqAPI('POST',`/deleteECycle/${row.id}`, null);
-      this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      reqAPI('POST',`/workorder/deleteworkorder/${row.id}`, null);
+      this.tableData = reqAPI('GET',`/workorder/getallworkorder/${this.$root.$guser}`, null).tableData;
     },
   },
 };

@@ -9,10 +9,10 @@
       <img src="@/assets/user.png" />
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item icon="el-icon-user-solid">
-          <span>个人中心</span>
+          <span @click="personclick">个人中心</span>
         </el-dropdown-item>
         <el-dropdown-item icon="el-icon-error">
-          <span @click="loginOut">退出</span>
+          <span @click="loginout">退出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -29,17 +29,13 @@ export default {
     clickCollapse() {
       this.$store.commit("clickCollapse");
     },
-    loginOut() {
-      const loading = this.$loading({
-        lock: true,
-        text: "正在退出登录请稍等...",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-      setTimeout(() => {
-        loading.close();
-        this.$router.push("/");
-      }, 1000);
+    personclick() {
+      console.log('personclick');
+      //this.$router.push("/person");
+    },
+    loginout() {
+      console.log('loginout');
+      this.$router.push("/login");
     },
   },
 };

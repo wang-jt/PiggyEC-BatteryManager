@@ -7,13 +7,14 @@
           <div slot="header" class="user-info">
             <img class="user-img" src="@/assets/user.png" />
             <ul>
-              <li>Admin</li>
-              <li>超级管理员</li>
+              <li>{{ $root.$guser }}</li>
+              <li v-if="$root.$guser === 'admin'">管理员</li>
+              <li v-else>用户</li>
             </ul>
           </div>
           <ul class="login-info">
-            <li>上次登录时间：<span>2008-12-12</span></li>
-            <li>上次登录地址：<span>日本-我孙子市</span></li>
+            <li>性别：<span>{{ userinfo.gender }}</span></li>
+            <li>年龄：<span>{{ userinfo.age }}</span></li>
           </ul>
         </el-card>
         <el-card class="table" shadow="always">
@@ -66,11 +67,13 @@
 </template>
 
 <script>
+import { reqAPI } from "@/request";
 import * as echarts from "echarts";
 
 export default {
   data() {
     return {
+      userinfo: null,
       label: {
         name: "品牌",
         todayBuy: "今日购买",
@@ -172,6 +175,9 @@ export default {
         },
       ],
     };
+  },
+  created() {
+    this.userinfo = reqAPI('GET',`/getUserInfo/${this.$root.$guser}`, null).userInfo;
   },
   mounted() {
     // 基于准备好的dom，初始化echarts实例

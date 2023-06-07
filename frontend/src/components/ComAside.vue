@@ -10,7 +10,7 @@
     style="height: 100%; border: none"
     :collapse="$store.state.isCollapse"
   >
-    <h3>{{ $store.state.isCollapse ? "管理模式" : "共享电柜管理系统" }}</h3>
+    <h3>{{ $root.$guser ? "电柜管理者模式" : "共享电柜管理系统" }}</h3>
     <el-menu-item
       @click="clickMenu(item)"
       v-for="(item, index) in menu"
@@ -51,16 +51,46 @@ export default {
         },
         {
           icon: "el-icon-setting",
-          title: "我的信息",
+          title: "我的车库",
           path: "/user",
         },
         {
           icon: "el-icon-setting",
-          title: "工单状态",
+          title: "我的工单",
           path: "/order",
         }
       ],
     };
+  },
+  created(){
+    if(this.$root.$guser === 'admin'){
+      this.menu.push({
+        icon: "el-icon-setting",
+        title: "电柜管理",
+        path: "/cabinet",
+      })
+      this.menu.push({
+        icon: "el-icon-setting",
+        title: "公司管理",
+        path: "/company",
+      })
+      this.menu.forEach((item) => {
+      if (item.title === "归还点位查询") {
+        item.title = "点位管理";
+      }
+      if (item.title === "可用电瓶查询") {
+        item.title = "电瓶管理";
+      }
+      if (item.title === "我的车库") {
+        item.title = "车辆管理";
+      }
+      if (item.title === "我的工单") {
+        item.title = "工单管理";
+      }
+    });
+
+    
+    }
   },
   methods: {
     clickMenu(item) {

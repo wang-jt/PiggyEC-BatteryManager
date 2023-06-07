@@ -17,14 +17,14 @@
         :addEdit="addEdit"
       ></com-table>
       <!--  -->
-      <el-input v-model="search" align="right" placeholder="输入车辆型号进行搜索" />
+      <el-input v-model="search" align="right" placeholder="输入电柜名/位置名/型号进行搜索" />
     </div>
     <el-table
       class="table"
       :data="
         tableData.filter(
           (data) =>
-            !search || data.type.includes(search)
+            !search || data.name.includes(search) || data.pos.includes(search) || data.type.includes(search)
         )
       "
       style="width: 100%"
@@ -38,6 +38,9 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot-scope="scope">
+          <el-button size="mini" @click="handleShow(scope.$index, scope.row)" style="background-color: #409EFF; color: #FFFFFF;">
+            查看</el-button
+          >
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
             >编辑</el-button
           >
@@ -50,12 +53,20 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog :visible.sync="dialogVisible" title="插槽详情" width="30%">
+      <el-table :data="slotData" style="width: 100%">
+        <el-table-column prop="id" label="ID"></el-table-column>
+        <el-table-column prop="type" label="类型"></el-table-column>
+        <el-table-column prop="maxNum" label="最大电瓶容量"></el-table-column>
+        <el-table-column prop="usedNum" label="当前电瓶容量"></el-table-column>
+      </el-table>
+    </el-dialog>
     <com-pagination align="right" :total="this.tableData.length"></com-pagination>
   </div>
 </template>
 
 <script>
-import ComTable from "@/components/ComTableECycle.vue";
+import ComTable from "@/components/ComTableCabinet.vue";
 import ComPagination from "@/components/ComPagination.vue";
 import { reqAPI } from "@/request";
 export default {
@@ -69,34 +80,40 @@ export default {
       addEdit: true,
       dialogForm: false,
       label: {
-        id: "车辆ID",
-        type: "车辆型号",
-        parameter: "电瓶参数",
-        ownerId: "车主ID",
-        ownerName:"车主姓名",
-        isUsing: "电池装配情况",
-        BatteryId: "使用电池ID"
+        id: "编号",
+        name: "名称",
+        pos: "地址",
+        type: "型号",
+        maxSlotNum: "最大插槽数",
+        companyName: "所属公司",
+        locx: "经度",
+        locy: "纬度",
       },
       form: {
         id: "",
+        name: "",
+        pos: "",
         type: "",
-        parameter: "",
-        ownerId: "",
+        maxSlotNum: "",
+        companyId: "",
+        locx: "",
+        locy: "",
       },
       tableData: [
         
       ],
       search: "",
+      slotData: [],
+      dialogVisible: false,
     };
   },
   created() {
-    this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+    this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).tableData;
     console.log(this.tableData);
   },
-
   methods: {
     clearForm() {
-      this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).tableData;
       setTimeout(() => {
         this.form = {
         id: "",
@@ -110,11 +127,9 @@ export default {
     saveForm(bool, form, isAdd) {
       this.dialogForm = bool;
       if (isAdd == false) {
-        console.log('editcycle', form);
-        reqAPI('POST',`/editECycle/${form.id}`, form);
+        reqAPI('POST',`/cabinet/editcabinet/${form.id}`, form);
       } else{
-        console.log('addecycle', form);
-        reqAPI('POST',`/addECycle`, form);
+        reqAPI('POST',`/cabinet/addcabinet`, form);
       }
       this.clearForm();
     },
@@ -129,9 +144,13 @@ export default {
     },
     handleDelete(index, row) {
       console.log('handledelete', row.id);
-      reqAPI('POST',`/deleteECycle/${row.id}`, null);
-      this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      reqAPI('POST',`/cabinet/deletecabinet/${row.id}`, null);
+      this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).tableData;
     },
+    handleShow(index, row){
+      this.slotData = reqAPI('GET',`/slot/getcabinetslot/${row.id}`, null).tableData;
+      this.dialogVisible = true;
+    } 
   },
 };
 </script>

@@ -17,7 +17,7 @@
         :addEdit="addEdit"
       ></com-table>
       <!--  -->
-      <el-input v-model="search" align="right" placeholder="输入车辆型号进行搜索" />
+      <el-input v-model="search" align="right" placeholder="输入公司名进行搜索" />
     </div>
     <el-table
       class="table"
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import ComTable from "@/components/ComTableECycle.vue";
+import ComTable from "@/components/ComTableCompany.vue";
 import ComPagination from "@/components/ComPagination.vue";
 import { reqAPI } from "@/request";
 export default {
@@ -69,19 +69,14 @@ export default {
       addEdit: true,
       dialogForm: false,
       label: {
-        id: "车辆ID",
-        type: "车辆型号",
-        parameter: "电瓶参数",
-        ownerId: "车主ID",
-        ownerName:"车主姓名",
-        isUsing: "电池装配情况",
-        BatteryId: "使用电池ID"
+        id: "编号",
+        name: "名称",
+        address: "地址",
       },
       form: {
         id: "",
-        type: "",
-        parameter: "",
-        ownerId: "",
+        name: "",
+        address: "",
       },
       tableData: [
         
@@ -90,13 +85,13 @@ export default {
     };
   },
   created() {
-    this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+    this.tableData = reqAPI('GET',`/company/getallcompany`, null).tableData;
     console.log(this.tableData);
   },
 
   methods: {
     clearForm() {
-      this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      this.tableData = reqAPI('GET',`/company/getallcompany`, null).tableData;
       setTimeout(() => {
         this.form = {
         id: "",
@@ -110,11 +105,9 @@ export default {
     saveForm(bool, form, isAdd) {
       this.dialogForm = bool;
       if (isAdd == false) {
-        console.log('editcycle', form);
-        reqAPI('POST',`/editECycle/${form.id}`, form);
+        reqAPI('POST',`/company/editcompany/${form.id}`, form);
       } else{
-        console.log('addecycle', form);
-        reqAPI('POST',`/addECycle`, form);
+        reqAPI('POST',`/company/addcompany`, form);
       }
       this.clearForm();
     },
@@ -129,8 +122,8 @@ export default {
     },
     handleDelete(index, row) {
       console.log('handledelete', row.id);
-      reqAPI('POST',`/deleteECycle/${row.id}`, null);
-      this.tableData = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      reqAPI('POST',`/company/deletecompany/${row.id}`, null);
+      this.tableData = reqAPI('GET',`/company/getallcompany`, null).tableData;
     },
   },
 };
