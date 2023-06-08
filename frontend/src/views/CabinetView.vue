@@ -108,7 +108,7 @@ export default {
     };
   },
   created() {
-    this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).tableData;
+    this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).cabinet;
     console.log(this.tableData);
   },
   methods: {

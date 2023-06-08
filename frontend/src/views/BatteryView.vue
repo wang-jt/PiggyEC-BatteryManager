@@ -35,6 +35,9 @@
         <el-button @click="handleLinkClose">取 消</el-button>
         <el-button type="primary" @click="handleLinkSuccess">确 定</el-button>
       </el-dialog>
+      <el-dialog :visible.sync="dialogVisible3" title="取用电瓶" width="80%" >
+        <com-info :data="this.data1"></com-info>
+      </el-dialog>
       <!--  -->
       <el-input v-model="search" align="right" placeholder="输入型号进行搜索" />
     </div>
@@ -57,8 +60,11 @@
       </el-table-column>
       <el-table-column align="right">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleLink(scope.$index, scope.row)" v-if="$root.$guser != 'admin'" style="background-color: #7fe8a2; color: #FFFFFF;"
+          <el-button size="mini" @click="handleLink(scope.$index, scope.row)" v-if="$root.$guser != 'admin'" style="background-color: #409EFF; color: #FFFFFF;"
             >取用</el-button
+          >
+          <el-button size="mini" @click="handleMap(scope.$index, scope.row)" v-if="$root.$guser != 'admin'" style="background-color: #7fe8a2; color: #FFFFFF;"
+            >定位</el-button
           >
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="$root.$guser == 'admin'"
             >编辑</el-button
@@ -79,11 +85,13 @@
 <script>
 import ComTable from "@/components/ComTableBattery.vue";
 import ComPagination from "@/components/ComPagination.vue";
+import ComInfo from "@/components/ComInfo.vue";
 import { reqAPI } from "@/request";
 export default {
   components: {
     ComTable,
     ComPagination,
+    ComInfo
   },
   data() {
     return {
@@ -116,10 +124,13 @@ export default {
         type: null,
       },
       ecycles: [],
+      dialogVisible3: false,
+      data1: {id: 1},
     };
   },
   created() {
     this.tableData = reqAPI('GET',`/battery/getallbattery`, null).tableData;
+    this.data1 = reqAPI('GET',`/cabinet/getallcabinet`, null).tableData[0];
     console.log(this.tableData);
   },
 
@@ -174,6 +185,12 @@ export default {
     handleLinkClose() {
       this.dialogVisible = false;
       this.linkform.ecid = null;
+    },
+    handleMap(index, row) {
+      this.data1 = reqAPI('GET', `/cabinet/cabinet/${this.tableData[index].cmasterid}`, null).cabinet;
+      this.data1.contain = reqAPI('GET', `/slot/getcabinetslot/${this.data1.id}`, null).tableData;
+      console.log('map', this.data1);
+      this.dialogVisible3 = true;
     },
   },
 };

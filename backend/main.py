@@ -136,6 +136,7 @@ async def get_all_battery():
             st = db.query(slot).filter(slot.id == i.masterSlotId).first()
             c = db.query(cabinet).filter(cabinet.id == st.masterId).first()
             i.curpos = str(st.id) + '-' + c.name + '-' + st.type
+            i.cmasterid = c.id
         elif i.curECycleId is not None:
             i.curpos = '电车-' + str(db.query(ecycle).filter(ecycle.id == i.curECycleId).first().id)
         else:

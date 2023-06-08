@@ -35,6 +35,9 @@
         <el-button @click="handleLinkClose">取 消</el-button>
         <el-button type="primary" @click="handleLinkSuccess">确 定</el-button>
       </el-dialog>
+      <el-dialog :visible.sync="dialogVisible3" title="取用电瓶" width="80%" >
+        <com-info :data="this.data1"></com-info>
+      </el-dialog>
       <!--  -->
       <el-input v-model="search" align="right" placeholder="输入型号进行搜索" />
     </div>
