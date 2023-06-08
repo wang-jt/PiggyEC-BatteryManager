@@ -23,7 +23,7 @@
               <el-option
                 v-for="ecycle in ecycles.filter(
                 (data) =>
-                  data.isUsing == '否' && data.type == linkform.type
+                  data.isUsing == '否' && data.parameter == linkform.type
               )"
                 :key="ecycle.id"
                 :label="ecycle.id + '-' + ecycle.type"
@@ -174,6 +174,7 @@ export default {
       this.linkform.btid = row.id;
       this.linkform.type = row.size;
       this.ecycles = reqAPI('GET',`/ecycle/${this.$root.$guser}`, null).tableData;
+      console.log('ecycles', this.ecycles);
       this.dialogVisible = true;
     },
     handleLinkSuccess() {

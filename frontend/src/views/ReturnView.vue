@@ -66,7 +66,7 @@
           <el-button size="mini" @click="handleShow(scope.$index, scope.row)" style="background-color: #409EFF; color: #FFFFFF;">
             查看</el-button
           >
-          <el-button size="mini" @click="" style="background-color: #7fe8a2; color: #FFFFFF;">
+          <el-button size="mini" @click="handleMap(scope.$index, scope.row)" style="background-color: #7fe8a2; color: #FFFFFF;">
             定位</el-button
           >
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="$root.$guser == 'admin'"
@@ -96,11 +96,13 @@
 <script>
 import ComTable from "@/components/ComTableSlot.vue";
 import ComPagination from "@/components/ComPagination.vue";
+import ComInfo from "@/components/ComInfo.vue";
 import { reqAPI } from "@/request";
 export default {
   components: {
     ComTable,
     ComPagination,
+    ComInfo,
   },
   data() {
     return {
@@ -129,6 +131,8 @@ export default {
       slotData: [],
       dialogVisible: false,
       dialogVisible2: false,
+      dialogVisible3: false,
+      data1: {},
       linkform: {
         ecid: null,
         btid: null,
@@ -199,6 +203,12 @@ export default {
     handleLinkClose() {
       this.dialogVisible2 = false;
       this.linkform.stid = null; this.linkform.btid = null; this.linkform.type = null; this.linkform.ecid = null;
+    },
+    handleMap(index, row) {
+      this.data1 = reqAPI('GET', `/cabinet/cabinet/${this.tableData[index].masterId}`, null).cabinet;
+      this.data1.contain = reqAPI('GET', `/slot/getcabinetslot/${this.data1.id}`, null).tableData;
+      console.log('map', this.data1);
+      this.dialogVisible3 = true;
     },
   },
 };

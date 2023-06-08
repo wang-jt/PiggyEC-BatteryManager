@@ -10,7 +10,7 @@
     style="height: 100%; border: none"
     :collapse="$store.state.isCollapse"
   >
-    <h3>{{ $root.$guser ? "电柜管理者模式" : "共享电柜管理系统" }}</h3>
+    <h3>{{ $root.$guser == 'admin' ? "电柜管理者模式" : "共享电柜管理系统" }}</h3>
     <el-menu-item
       @click="clickMenu(item)"
       v-for="(item, index) in menu"

@@ -37,6 +37,9 @@ export default {
           var point = new BMapGL.Point(parseFloat(item.locx),parseFloat(item.locy));
           var myicon = new BMapGL.Icon('/1.png', new BMapGL.Size(40, 40));
           var marker = new BMapGL.Marker(point, {icon: myicon}); // 创建标注
+          marker.addEventListener("click", (e) => {
+            this.$router.push({path: '/available'})
+          });
           this.map.addOverlay(marker); // 将标注添加到地图中
 
           var labeldesc = '';

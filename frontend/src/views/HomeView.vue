@@ -31,25 +31,7 @@
       </el-col>
       <!--  -->
       <el-col :span="16">
-        <div class="num">
-          <el-card
-            v-for="(item, index) in countData"
-            :key="index"
-            shadow="always"
-            body-style="padding: 0;display: flex;"
-          >
-            <i
-              :class="'el-icon-' + item.icon"
-              :style="'background:' + item.color"
-            ></i>
-            <ul>
-              <li>
-                ￥<span>{{ item.value }}</span>
-              </li>
-              <li>{{ item.name }}</li>
-            </ul>
-          </el-card>
-        </div>
+        
         <el-card style="width: 100%; height: 300px; margin-bottom: 20px">
           <div id="line"></div>
         </el-card>
@@ -75,66 +57,13 @@ export default {
     return {
       userinfo: null,
       label: {
-        name: "品牌",
-        todayBuy: "今日购买",
-        monthBuy: "本月购买",
-        totalBuy: "总购买",
+        id: "租赁电瓶",
+        pos: "所属车辆",
+        size: "型号",
+        powerLeft: "剩余电量",
       },
       tableData: [
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
-        {
-          name: "巴黎世家",
-          todayBuy: 1450,
-          monthBuy: 7500,
-          totalBuy: 85000,
-        },
+        
       ],
       countData: [
         {
@@ -174,10 +103,24 @@ export default {
           color: "#5ab1ef",
         },
       ],
+      data: null,
+      slotData: [],
     };
   },
   created() {
     this.userinfo = reqAPI('GET',`/getUserInfo/${this.$root.$guser}`, null).userInfo;
+    this.tableData = reqAPI('GET',`/getallmybattery/${this.$root.$guser}`, null).tableData;
+    this.data = reqAPI('GET', '/cabinet/getallcabinet', null).tableData;
+    this.data.forEach((item) => {
+      item.usedNum = 0;
+      item.contain = reqAPI('GET', `/slot/getcabinetslot/${item.id}`, null).tableData
+      item.contain.forEach((i) => {
+        i.name = i.id + '号槽';
+        item.usedNum += i.usedNum;
+        this.slotData.push(i);
+      })
+    })
+    //console.log('slotdata',this.slotData)
   },
   mounted() {
     // 基于准备好的dom，初始化echarts实例
@@ -196,7 +139,7 @@ export default {
         orient: "horizontal", //图例布局方式：水平 'horizontal' 、垂直 'vertical'
         x: "left", // 横向放置位置，选项：'center'、'left'、'right'、'number'（横向值 px）
         y: "top", // 纵向放置位置，选项：'top'、'bottom'、'center'、'number'（纵向值 px）
-        data: ["猜想", "预期", "实际"],
+        data: ["实际"],
       },
       grid: {
         // 图表距离边框的距离，可用百分比和数字（px）配置
@@ -226,7 +169,7 @@ export default {
       },
 
       xAxis: {
-        name: "月份",
+        name: "日期",
         type: "category",
         axisLine: {
           lineStyle: {
@@ -240,18 +183,14 @@ export default {
         },
         boundaryGap: false, //数据从 Y 轴起始
         data: [
-          "1月",
-          "2月",
-          "3月",
-          "4月",
-          "5月",
-          "6月",
-          "7月",
-          "8月",
-          "9月",
-          "10月",
-          "11月",
-          "12月",
+          "6.1",
+          "6.2",
+          "6.3",
+          "6.4",
+          "6.5",
+          "6.6",
+          "6.7",
+          "6.8",
         ],
       },
 
@@ -259,7 +198,7 @@ export default {
         name: "人次",
         type: "value",
         min: 0, // 配置 Y 轴刻度最小值
-        max: 4000, // 配置 Y 轴刻度最大值
+        max: 30, // 配置 Y 轴刻度最大值
         splitNumber: 7, // 配置 Y 轴数值间隔
         axisLine: {
           lineStyle: {
@@ -271,51 +210,9 @@ export default {
 
       series: [
         {
-          name: "猜想",
-          data: [454, 226, 891, 978, 901, 581, 400, 543, 272, 955, 1294, 1581],
-          type: "line",
-          symbolSize: function (value) {
-            // 点的大小跟随数值增加而变大
-            return value / 150;
-          },
-          symbol: "circle",
-          itemStyle: {
-            normal: {
-              label: {
-                show: true,
-              },
-              lineStyle: {
-                color: "rgba(0,0,0,0)", // 折线颜色设置为0，即只显示点，不显示折线
-              },
-            },
-          },
-        },
-
-        {
-          name: "预期",
-          data: [
-            2455, 2534, 2360, 2301, 2861, 2181, 1944, 2197, 1745, 1810, 2283,
-            2298,
-          ],
-          type: "line",
-          symbolSize: 8, //设置折线上圆点大小
-          itemStyle: {
-            normal: {
-              label: {
-                show: true, // 在折线拐点上显示数据
-              },
-              lineStyle: {
-                width: 3, // 设置虚线宽度
-                type: "dotted", // 虚线'dotted' 实线'solid'
-              },
-            },
-          },
-        },
-
-        {
           name: "实际",
           data: [
-            1107, 1352, 1740, 1968, 1647, 1570, 1343, 1757, 2547, 2762, 3170,
+            11, 13, 17, 19, 16, 15, 13, 17, 25, 27, 3170,
             3665,
           ],
           type: "line",
@@ -343,17 +240,17 @@ export default {
         left: "left",
         top: "10",
         orient: "vertical",
-        data: ["一季度", "二季度", "三季度", "四季度"],
+        data: this.data.map((item) => item.name),
       },
       dataset: {
         source: [
-          ["quarter", "一季度", "二季度", "三季度", "四季度"],
-          ["完美世界", 25.74, 25.7, 29.18, 21.58],
+          ['quarter'].concat(this.data.map((item) => item.name)),
+          ["value"].concat(this.data.map((item) => item.usedNum)),
         ],
       },
       series: [
         {
-          name: "完美世界",
+          name: "电柜",
           type: "pie",
           seriesLayoutBy: "row",
           encode: {
@@ -369,15 +266,15 @@ export default {
     });
     bar.setOption({
       title: {
-        text: "本月售卖情况",
+        text: "重点电柜插槽情况表",
       },
       color: ["#9462e5", "#e1bb22"],
       tooltip: {},
       legend: {
-        data: ["销量", "退货"],
+        data: ["已使用", "未使用"],
       },
       xAxis: {
-        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+        data: this.slotData.map((item) => item.name),
       },
       yAxis: {
         axisLine: {
@@ -391,14 +288,14 @@ export default {
       },
       series: [
         {
-          name: "销量",
+          name: "已使用",
           type: "bar",
-          data: [550, 120, 336, 110, 430, 420],
+          data: this.slotData.map((item) => item.usedNum),
         },
         {
-          name: "退货",
+          name: "未使用",
           type: "bar",
-          data: [155, 20, 36, 30, 90, 140],
+          data: this.slotData.map((item) => item.maxNum - item.usedNum),
         },
       ],
     });

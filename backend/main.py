@@ -165,6 +165,18 @@ async def edit_battery(id:int, request: Request):
     db.refresh(bt)
     return {'done': True}
 
+@app.get('/getallmybattery/{user}')
+async def get_all_my_battery(user: str):
+    id = getUserIdByName(user)
+    res = db.query(ecycle).filter(ecycle.ownerId == id).all()
+    ret = []
+    for i in res:
+        c = db.query(battery).filter(battery.curECycleId == i.id).first()
+        if c is not None:
+            c.pos = str(i.id) + '-' + i.type
+            ret.append(c)
+    return {'tableData': [{'id': i.id, 'pos': i.pos, 'size': i.size, 'powerLeft': i.powerLeft} for i in ret]}
+
 @app.post("/battery/deletebattery/{id}")
 async def delete_battery(id:int):
     bt = db.query(battery).filter(battery.id == id).first()
