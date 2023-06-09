@@ -24,7 +24,7 @@
       :data="
         tableData.filter(
           (data) =>
-            !search || data.name.includes(search) || data.pos.includes(search) || data.type.includes(search)
+            !search || data.name.includes(search)
         )
       "
       style="width: 100%"
@@ -108,7 +108,7 @@ export default {
     };
   },
   created() {
-    this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).cabinet;
+    this.tableData = reqAPI('GET',`/cabinet/getallcabinet`, null).tableData;
     console.log(this.tableData);
   },
   methods: {

@@ -225,7 +225,7 @@ export default {
     pie.setOption({
       title: {
         left: "center",
-        text: "营业总收入季度分布图",
+        text: "可用电瓶分布图",
         textStyle: {
           color: "#6d6",
         },
