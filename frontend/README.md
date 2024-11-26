@@ -1,4 +1,4 @@
-# demo
+# PigEC-BatteryManager Frontend.
 
 ## Project setup
 ```
